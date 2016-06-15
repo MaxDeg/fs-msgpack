@@ -14,41 +14,40 @@ type Value =
     | Extension of int8 * byte[]
 
 let (|UInt8|_|) = function Value.UInt8 b -> Some b | _ -> None
+
 let (|UInt16|_|) = function 
-    | Value.UInt8 b -> uint16 b |> Some
+    | UInt8 b -> uint16 b |> Some
     | Value.UInt16 i -> Some i
     | _ -> None
 let (|UInt32|_|) = function 
-    | Value.UInt8 b -> uint32 b |> Some
-    | Value.UInt16 i -> uint32 i |> Some
+    | UInt16 i -> uint32 i |> Some
     | Value.UInt32 i -> Some i
     | _ -> None
 let (|UInt64|_|) = function 
-    | Value.UInt8 b -> uint64 b |> Some
-    | Value.UInt16 i -> uint64 i |> Some
-    | Value.UInt32 i -> uint64 i |> Some
+    | UInt32 i -> uint64 i |> Some
     | Value.UInt64 i -> Some i
     | _ -> None
     
-let (|Int8|_|) = function Value.Int8 b -> Some b | _ -> None
+let (|Int8|_|) = function 
+    | Value.Int8 b -> Some b
+    | Value.UInt8 b -> int8 b |> Some // FixNum positive
+    | _ -> None
+
 let (|Int16|_|) = function 
-    | Value.Int8 b -> int16 b |> Some
+    | Int8 b -> int16 b |> Some
     | Value.Int16 i -> Some i
     | _ -> None
-let (|Int32|_|) = function 
-    | Value.Int8 b -> int32 b |> Some
-    | Value.Int16 i -> int32 i |> Some
+let (|Int32|_|) = function
+    | Int16 i -> int32 i |> Some
     | Value.Int32 i -> Some i
     | _ -> None
 let (|Int64|_|) = function 
-    | Value.Int8 b -> int64 b |> Some
-    | Value.Int16 i -> int64 i |> Some
-    | Value.Int32 i -> int64 i |> Some
+    | Int32 i -> int64 i |> Some
     | Value.Int64 i -> Some i
     | _ -> None
 
 let (|Float32|_|) = function Value.Float32 f -> Some f | _ -> None
 let (|Float64|_|) = function 
-    | Value.Float32 f -> float f |> Some
+    | Float32 f -> float f |> Some
     | Value.Float64 f -> Some f
     | _ -> None

@@ -22,3 +22,8 @@ String @"Miusov, as a man man of breeding and deilcacy, could not but feel some 
 
 [|170uy; 67uy; 111uy; 117uy; 99uy; 111uy; 117uy; 32uy; 116uy; 111uy; 105uy|]
 |> Unpacker.unpack
+
+let r =
+    match Int64 1L |> Packer.pack |> Unpacker.unpack with
+    | Int64 c -> "Active record return " + string c
+    | _ -> "Not working"
