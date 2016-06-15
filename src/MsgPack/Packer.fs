@@ -42,7 +42,7 @@ let private packString (str : string) =
     let bytes = Encoding.UTF8.GetBytes str
     match Array.length bytes with
     | cnt when cnt < 32 -> 
-        [| yield DataType.FixString.[cnt / 2]
+        [| yield DataType.FixString.[cnt]
            yield! bytes |] 
     | cnt when cnt < pown 2 8 ->
         [| yield DataType.String8
