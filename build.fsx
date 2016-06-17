@@ -2,19 +2,20 @@
 #r "./packages/FAKE/tools/FakeLib.dll"
 
 open Fake
+open Fake.Testing
 
 // Directories
 let buildDir  = "./build/"
+let testDir  = "./test/"
 let deployDir = "./deploy/"
 
 
 // Filesets
-let appReferences  =
-    !! "/**/*.csproj"
-      ++ "/**/*.fsproj"
+let appReferences  = !! "/src/MsgPack/*.fsproj"
+let testReferences  = !! "/src/MsgPack.Test/*.fsproj"
 
 // version info
-let version = "0.1"  // or retrieve from CI server
+let version = "0.2"  // or retrieve from CI server
 
 // Targets
 Target "Clean" (fun _ ->
@@ -22,9 +23,21 @@ Target "Clean" (fun _ ->
 )
 
 Target "Build" (fun _ ->
-    // compile all projects below src/app/
     MSBuildDebug buildDir "Build" appReferences
         |> Log "AppBuild-Output: "
+)
+
+Target "BuildTest" (fun _ ->
+    MSBuildDebug testDir "Build" testReferences
+        |> Log "AppBuild-Output: "
+)
+
+Target "Test" (fun _ ->
+    !! (testDir + "/*.Test.dll")
+    |> NUnit3 (fun p -> 
+        {p with 
+            ShadowCopy  = false
+            ToolPath = "packages/test/NUnit.ConsoleRunner/tools/nunit3-console.exe" })
 )
 
 Target "Deploy" (fun _ ->
@@ -36,6 +49,8 @@ Target "Deploy" (fun _ ->
 // Build order
 "Clean"
   ==> "Build"
+  ==> "BuildTest"
+  ==> "Test"
   ==> "Deploy"
 
 // start build

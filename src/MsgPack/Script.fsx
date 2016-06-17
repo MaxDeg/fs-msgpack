@@ -12,6 +12,7 @@ Unpacker.unpack values
 
 encode values
 
+System.BitConverter.GetBytes(int16 128)
 
 Extension(1y, [| 0uy; 1uy; 2uy |])
 |> Packer.pack

@@ -3,6 +3,8 @@ module MsgPack.Unpacker
 open System
 open System.Text
 
+#nowarn "40"
+
 let private unpackUInt8 tail =
     let value = Array.head tail
     Value.UInt8 value, Array.tail tail

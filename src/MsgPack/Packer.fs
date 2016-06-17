@@ -27,8 +27,8 @@ let private packInt (bytes : byte[]) =
         | 1 when Array.exists ((=) bytes.[0]) DataType.NegativeFixNum -> 
             Array.take 1 bytes
         | 1 -> [| yield DataType.Int8; yield! Array.take 1 bytes |]
-        | 2 when Array.get bytes 0 < 128uy && Array.get bytes 1 = 0uy -> pack 1
-        | 2 when Array.get bytes 0 > 127uy && Array.get bytes 1 = 255uy -> pack 1
+        | 2 when Array.get bytes 0 < 129uy && Array.get bytes 1 = 0uy -> pack 1
+        | 2 when Array.get bytes 0 > 128uy && Array.get bytes 1 = 255uy -> pack 1
         | 2 -> [| yield DataType.Int16; yield! Array.take 2 bytes |]
         | x when Array.get bytes (x - 1) = 0uy && Array.get bytes (x - 2) = 0uy -> pack (x - 2)
         | x when Array.get bytes (x - 1) = 255uy && Array.get bytes (x - 2) = 255uy -> pack (x - 2)
