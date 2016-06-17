@@ -50,27 +50,34 @@ let private unpackFloat64 tail =
     BitConverter.ToDouble(tail, 0) |> Value.Float64,
     Array.skip 8 tail
 
+let private unpackString tail size =
+    tail |> Array.take size |> Encoding.UTF8.GetString |> Value.String
+
 let private unpackFixString head tail =
     let cnt = int(head &&& byte((1 <<< 5) - 1)) // 5-bit int
-    Encoding.UTF8.GetString tail |> Value.String,
+    let tail' = Array.take cnt tail
+    Encoding.UTF8.GetString tail' |> Value.String,
     Array.skip cnt tail
 
 let private unpackString8 tail =
+    printfn "unpackString8"
     let cnt = Array.head tail |> int
     let tail' = Array.tail tail
-    Encoding.UTF8.GetString tail' |> Value.String,
+    unpackString tail' cnt,
     Array.skip cnt tail'
 
 let private unpackString16 tail =
+    printfn "unpackString16"
     let cnt = BitConverter.ToUInt16(Array.take 2 tail, 0) |> int
     let tail' = Array.skip 2 tail
-    Encoding.UTF8.GetString tail' |> Value.String,
+    unpackString tail' cnt,
     Array.skip cnt tail'
 
 let private unpackString32 tail =
+    printfn "unpackString32"
     let cnt = BitConverter.ToUInt32(Array.take 4 tail, 0) |> int
     let tail' = Array.skip 4 tail
-    Encoding.UTF8.GetString tail' |> Value.String,
+    unpackString tail' cnt,
     Array.skip cnt tail'
         
 let private unpackBinary8 tail =
@@ -116,6 +123,7 @@ let private unpackExtension32 tail =
     Array.skip 4 tail |> unpackExtension cnt
     
 let unpack bytes =
+    printfn "unpack"
     let rec unpack' bytes' =
         let tail = Array.tail bytes'
         match Array.head bytes' with
