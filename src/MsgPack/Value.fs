@@ -51,3 +51,7 @@ let (|Float64|_|) = function
     | Float32 f -> float f |> Some
     | Value.Float64 f -> Some f
     | _ -> None
+
+let (|Arraylist|_|) = function 
+    | Value.Array arr -> Array.toList arr |> Some
+    | _ -> None
